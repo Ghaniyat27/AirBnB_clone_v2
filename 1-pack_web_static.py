@@ -1,18 +1,21 @@
 #!/usr/bin/python3
 """ Function that compress a folder """
 from datetime import datetime
-from fabric.api import local
+from fabric.api import *
+
 import os
 
 
 def do_pack():
-    try:
-        if not os.path.exists("versions"):
-            local('mkdir versions')
-        t = datetime.now()
-        f = "%Y%m%d%H%M%S"
-        archive_path = 'versions/web_static_{}.tgz'.format(t.strftime(f))
-        local('tar -cvzf {} web_static'.format(archive_path))
-        return archive_path
-    except:
+    """
+    making an archive on web_static folder
+    """
+
+    time = datetime.now()
+    archive = 'web_static_' + time.strftime("%Y%m%d%H%M%S") + '.' + 'tgz'
+    local('mkdir -p versions')
+    create = local('tar -cvzf versions/{} web_static'.format(archive))
+    if create is not None:
+        return archive
+    else:
         return None
